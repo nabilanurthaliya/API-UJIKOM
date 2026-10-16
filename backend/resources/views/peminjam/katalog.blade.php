@@ -800,13 +800,13 @@
 
         @php
 
-            $totalAlat = $alats->count();
+            $totalAlat = $alat->count();
 
-            $totalStok = $alats->sum(function ($alat) {
+            $totalStok = $alat->sum(function ($alat) {
                 return (int) $alat->stok;
             });
 
-            $alatTersedia = $alats->filter(function ($alat) {
+            $alatTersedia = $alat->filter(function ($alat) {
                 return $alat->stok > 0;
             })->count();
 
@@ -961,7 +961,7 @@
                      TABLE
                 ================================================= -->
 
-                @if ($alats->isEmpty())
+                @if ($alat->isEmpty())
 
                     <div class="empty">
 
@@ -1025,7 +1025,7 @@
                             <tbody id="alatTableBody">
 
 
-                                @foreach ($alats as $index => $alat)
+                                @foreach ($alat as $index => $alat)
 
                                     <tr
                                         class="alat-row"

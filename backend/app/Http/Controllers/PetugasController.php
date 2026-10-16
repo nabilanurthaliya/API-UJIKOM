@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Peminjaman;
 use App\Models\Pengembalian;
 use App\Models\Alat;
+use App\Models\LogAktivitas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +16,7 @@ class PetugasController extends Controller
     {
         $search = $request->input('search');
 
-        $peminjamans = Peminjaman::with(['user', 'detailPinjam.alat'])
+        $peminjaman = Peminjaman::with(['user', 'detailPinjam.alat'])
             ->where('status', 'diajukan')
             ->when($search, function ($query, $search) {
                 return $query->whereHas('user', function ($q) use ($search) {
@@ -25,7 +26,7 @@ class PetugasController extends Controller
             ->latest()
             ->get();
 
-        return view('petugas.peminjaman.index', compact('peminjamans', 'search'));
+        return view('petugas.peminjaman.index', compact('peminjaman', 'search'));
     }
 
     // Menyetujui Peminjaman (Mengubah status & mengurangi stok alat)
@@ -44,6 +45,12 @@ class PetugasController extends Controller
             }
 
             DB::commit();
+
+            LogAktivitas::create([
+                'user_id' => auth()->id(),
+                'aktivitas' => 'Menyetujui peminjaman ID: ' . $peminjaman->id . '.',
+            ]);
+
             return redirect()->back()->with('success', 'Peminjaman disetujui dan stok alat dikurangi.');
         } catch (\Exception $e) {
             DB::rollback();
@@ -59,7 +66,14 @@ class PetugasController extends Controller
 
             // Pastikan statusnya memang masih diajukan
             if ($peminjaman->status == 'diajukan') {
+                $peminjamanId = $peminjaman->id;
                 $peminjaman->delete();
+
+                LogAktivitas::create([
+                    'user_id' => auth()->id(),
+                    'aktivitas' => 'Menolak peminjaman ID: ' . $peminjamanId . '.',
+                ]);
+
                 return redirect()->back()->with('success', 'Pengajuan peminjaman berhasil ditolak.');
             }
 
@@ -74,7 +88,7 @@ class PetugasController extends Controller
     {
         $search = $request->input('search');
 
-        $peminjamans = Peminjaman::with(['user', 'detailPinjam.alat', 'pengembalian'])
+        $peminjaman = Peminjaman::with(['user', 'detailPinjam.alat', 'pengembalian'])
             ->whereIn('status', ['dipinjam', 'telat'])
             ->when($search, function ($query, $search) {
                 return $query->whereHas('user', function ($q) use ($search) {
@@ -84,7 +98,7 @@ class PetugasController extends Controller
             ->latest()
             ->get();
 
-        return view('petugas.pengembalian.index', compact('peminjamans', 'search'));
+        return view('petugas.pengembalian.index', compact('peminjaman', 'search'));
     }
 
     // Memproses pengembalian alat oleh petugas
@@ -116,6 +130,12 @@ class PetugasController extends Controller
             ]);
 
             DB::commit();
+
+            LogAktivitas::create([
+                'user_id' => auth()->id(),
+                'aktivitas' => 'Memproses pengembalian alat untuk peminjaman ID: ' . $peminjaman->id . '.',
+            ]);
+
             return redirect()->back()->with('success', 'Pengembalian alat berhasil diproses dan stok telah diperbarui.');
         } catch (\Exception $e) {
             DB::rollback();

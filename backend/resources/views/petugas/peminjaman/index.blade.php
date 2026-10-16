@@ -91,7 +91,7 @@
 
                 <tbody class="text-gray-700 text-sm">
 
-                    @forelse($peminjamans as $item)
+                    @forelse($peminjaman as $item)
 
                         <tr class="hover:bg-gray-50 transition align-top">
 
@@ -100,11 +100,11 @@
                             </td>
 
                             <td class="py-3 px-4 border-b">
-                                {{ $item->tgl_pinjam }}
+                                {{ \Carbon\Carbon::parse($item->tgl_pinjam)->format('d/m/Y') }}
                             </td>
 
                             <td class="py-3 px-4 border-b">
-                                {{ $item->tgl_kembali_plan }}
+                                {{ \Carbon\Carbon::parse($item->tgl_kembali_plan)->format('d/m/Y') }}
                             </td>
 
                             <td class="py-3 px-4 border-b">

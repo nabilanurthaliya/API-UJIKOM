@@ -69,8 +69,8 @@
                 <tr class="hover:bg-gray-50 transition align-top">
                     <td class="py-3 px-4 border-b">{{ $index + 1 }}</td>
                     <td class="py-3 px-4 border-b font-medium text-gray-900">{{ $item->user->name ?? '-' }}</td>
-                    <td class="py-3 px-4 border-b">{{ $item->tgl_pinjam }}</td>
-                    <td class="py-3 px-4 border-b">{{ $item->tgl_kembali_plan }}</td>
+                    <td class="py-3 px-4 border-b">{{ \Carbon\Carbon::parse($item->tgl_pinjam)->format('d/m/Y') }}</td>
+                    <td class="py-3 px-4 border-b">{{ \Carbon\Carbon::parse($item->tgl_kembali_plan)->format('d/m/Y') }}</td>
                     <td class="py-3 px-4 border-b">
                         <span class="px-2.5 py-1 rounded text-xs font-semibold
                             {{ $item->status == 'selesai' ? 'bg-emerald-100 text-emerald-700' : '' }}

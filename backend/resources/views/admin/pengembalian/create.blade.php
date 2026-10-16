@@ -20,9 +20,9 @@
                     <label class="block text-gray-700 text-xs font-bold mb-2">Pilih Transaksi Peminjaman (Aktif)</label>
                     <select name="peminjaman_id" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs bg-white text-gray-700">
                         <option value="">-- Pilih Peminjam & Tanggal Rencana --</option>
-                        @foreach($peminjamans as $pinjam)
+                        @foreach($peminjaman as $pinjam)
                             <option value="{{ $pinjam->id }}" {{ old('peminjaman_id') == $pinjam->id ? 'selected' : '' }}>
-                                {{ $pinjam->user->name ?? 'User' }} - (Rencana Kembali: {{ $pinjam->tgl_kembali_plan }})
+                                {{ $pinjam->user->name ?? 'User' }} - (Rencana Kembali: {{ \Carbon\Carbon::parse($pinjam->tgl_kembali_plan)->format('d/m/Y') }})
                             </option>
                         @endforeach
                     </select>

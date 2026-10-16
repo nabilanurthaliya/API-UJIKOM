@@ -61,7 +61,7 @@
                                 {{ $item->peminjaman->user->name ?? 'Fajar Oktavian' }}
                             </td>
                             <td class="py-4 px-6 text-gray-600">
-                                {{ $item->tgl_kembali }}
+                                {{ \Carbon\Carbon::parse($item->tgl_kembali)->format('d/m/Y') }}
                             </td>
                             <td class="py-4 px-6">
                                 <span class="px-3 py-1 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-600 border border-blue-100">

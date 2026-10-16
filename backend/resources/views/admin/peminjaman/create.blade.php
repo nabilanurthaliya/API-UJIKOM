@@ -50,7 +50,7 @@
                     <select name="alat_id[]" required
                         class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none">
                         <option value="">-- Pilih Alat --</option>
-                        @foreach($alats as $alat)
+                        @foreach($alat as $alat)
                             <option value="{{ $alat->id }}">
                                 {{ $alat->nama_alat }} (Stok: {{ $alat->stok }})
                             </option>

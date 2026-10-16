@@ -4,7 +4,8 @@
 @section('header-title', 'Manajemen Pengguna Sistem')
 
 @section('content')
-    <!-- Notifikasi Sukses/Gagal -->
+
+    {{-- Notifikasi Sukses --}}
     @if(session('success'))
         <div class="mb-4 bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-lg shadow-sm text-sm">
             {{ session('success') }}
@@ -12,13 +13,22 @@
     @endif
 
     <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
-        <!-- Header, Form Search, & Tombol Tambah User -->
+
+        {{-- Header, Search, dan Tombol Tambah --}}
         <div class="p-5 border-b border-gray-200 bg-gray-50 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <h3 class="text-lg font-bold text-gray-800">Daftar Pengguna Sistem</h3>
-            
+
+            <h3 class="text-lg font-bold text-gray-800">
+                Daftar Pengguna Sistem
+            </h3>
+
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                <!-- Form Search -->
-                <form action="{{ route('admin.user.index') }}" method="GET" class="flex w-full sm:w-auto">
+
+                {{-- Form Search --}}
+                <form
+                    action="{{ route('admin.user.index') }}"
+                    method="GET"
+                    class="flex w-full sm:w-auto"
+                >
                     <input
                         type="text"
                         name="search"
@@ -45,80 +55,197 @@
                     @endif
                 </form>
 
-                <!-- Tombol Tambah User -->
-                <a href="{{ route('admin.user.create') }}" 
-                   class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition text-center whitespace-nowrap">
+                {{-- Tombol Tambah User --}}
+                <a
+                    href="{{ route('admin.user.create') }}"
+                    class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition text-center whitespace-nowrap"
+                >
                     + Tambah User
                 </a>
+
             </div>
         </div>
 
-        <!-- Tabel Data User -->
+        {{-- Tabel Data User --}}
         <div class="overflow-x-auto">
+
             <table class="w-full text-left border-collapse">
+
                 <thead>
                     <tr class="bg-gray-100 text-gray-600 text-sm uppercase tracking-wider">
-                        <th class="py-3 px-4 border-b">Nama</th>
-                        <th class="py-3 px-4 border-b">Email</th>
-                        <th class="py-3 px-4 border-b">Role / Hak Akses</th>
-                        <th class="py-3 px-4 border-b">No. HP</th>
-                        <th class="py-3 px-4 border-b">Aksi</th>
+
+                        <th class="py-3 px-4 border-b text-center">
+                            Foto
+                        </th>
+
+                        <th class="py-3 px-4 border-b">
+                            Nama
+                        </th>
+
+                        <th class="py-3 px-4 border-b">
+                            Email
+                        </th>
+
+                        <th class="py-3 px-4 border-b">
+                            Role / Hak Akses
+                        </th>
+
+                        <th class="py-3 px-4 border-b">
+                            No. HP
+                        </th>
+
+                        <th class="py-3 px-4 border-b">
+                            Aksi
+                        </th>
+
                     </tr>
                 </thead>
+
                 <tbody class="text-gray-700 text-sm">
+
                     @forelse($users as $user)
+
                         <tr class="hover:bg-gray-50 transition">
-                            <td class="py-3 px-4 border-b font-medium text-gray-900">{{ $user->name }}</td>
-                            <td class="py-3 px-4 border-b">{{ $user->email }}</td>
+
+                            {{-- FOTO PROFIL --}}
+                            <td class="py-3 px-4 border-b text-center">
+
+                                @if($user->foto_profile)
+
+                                    <img
+                                        src="{{ asset($user->foto_profile) }}"
+                                        alt="Foto {{ $user->name }}"
+                                        class="w-12 h-12 rounded-full object-cover border-2 border-gray-200 mx-auto shadow-sm"
+                                    >
+
+                                @else
+
+                                    <div
+                                        class="w-12 h-12 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center mx-auto font-bold text-lg"
+                                    >
+                                        {{ strtoupper(substr($user->name, 0, 1)) }}
+                                    </div>
+
+                                @endif
+
+                            </td>
+
+                            {{-- NAMA --}}
+                            <td class="py-3 px-4 border-b font-medium text-gray-900">
+                                {{ $user->name }}
+                            </td>
+
+                            {{-- EMAIL --}}
                             <td class="py-3 px-4 border-b">
-                                <span class="px-2.5 py-1 text-xs font-semibold rounded-full 
-                                    @if($user->role == 'admin') bg-purple-100 text-purple-800 
-                                    @elseif($user->role == 'petugas') bg-blue-100 text-blue-800 
-                                    @else bg-green-100 text-green-800 @endif">
+                                {{ $user->email }}
+                            </td>
+
+                            {{-- ROLE --}}
+                            <td class="py-3 px-4 border-b">
+
+                                <span
+                                    class="px-2.5 py-1 text-xs font-semibold rounded-full
+                                    @if($user->role === 'admin')
+                                        bg-purple-100 text-purple-800
+                                    @elseif($user->role === 'petugas')
+                                        bg-blue-100 text-blue-800
+                                    @else
+                                        bg-green-100 text-green-800
+                                    @endif"
+                                >
                                     {{ ucfirst($user->role) }}
                                 </span>
+
                             </td>
-                            <td class="py-3 px-4 border-b">{{ $user->no_hp ?? '-' }}</td>
+
+                            {{-- NO HP --}}
                             <td class="py-3 px-4 border-b">
-                                <!-- Tombol Edit & Hapus -->
+                                {{ $user->no_hp ?? '-' }}
+                            </td>
+
+                            {{-- AKSI --}}
+                            <td class="py-3 px-4 border-b">
+
                                 <div class="flex items-center space-x-2">
-                                    <!-- Tombol Edit -->
-                                    <a href="{{ route('admin.user.edit', $user->id) }}" 
-                                       class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded text-xs font-semibold transition">
+
+                                    {{-- Tombol Edit --}}
+                                    <a
+                                        href="{{ route('admin.user.edit', $user->id) }}"
+                                        class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded text-xs font-semibold transition"
+                                    >
                                         Edit
                                     </a>
 
-                                    <!-- Tombol Hapus -->
-                                    <form action="{{ route('admin.user.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus user ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-xs font-semibold transition">
-                                            Hapus
-                                        </button>
-                                    </form>
+                                    {{-- Tombol Hapus --}}
+                                    @if($user->role !== 'admin')
+
+                                        <form
+                                            action="{{ route('admin.user.destroy', $user->id) }}"
+                                            method="POST"
+                                            onsubmit="return confirm('Yakin ingin menghapus user ini?')"
+                                        >
+
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button
+                                                type="submit"
+                                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-xs font-semibold transition"
+                                            >
+                                                Hapus
+                                            </button>
+
+                                        </form>
+
+                                    @endif
+
                                 </div>
+
                             </td>
+
                         </tr>
+
                     @empty
+
+                        {{-- Data Kosong --}}
                         <tr>
-                            <td colspan="5" class="py-4 text-center text-gray-500">
+                            <td
+                                colspan="6"
+                                class="py-4 text-center text-gray-500"
+                            >
+
                                 @if(request('search'))
-                                    Data pengguna dengan kata kunci "<strong>{{ request('search') }}</strong>" tidak ditemukan.
+
+                                    Data pengguna dengan kata kunci
+                                    "<strong>{{ request('search') }}</strong>"
+                                    tidak ditemukan.
+
                                 @else
+
                                     Belum ada data pengguna.
+
                                 @endif
+
                             </td>
                         </tr>
+
                     @endforelse
+
                 </tbody>
+
             </table>
+
         </div>
 
-        <!-- Pagination (Opsional) -->
+        {{-- Pagination --}}
         @if(method_exists($users, 'links'))
+
             <div class="p-4 border-t border-gray-200 bg-gray-50">
                 {{ $users->appends(request()->query())->links() }}
             </div>
+
         @endif
+
     </div>
+
 @endsection

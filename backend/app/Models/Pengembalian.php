@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use App\Models\Pengembalian;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,21 +19,24 @@ class Pengembalian extends Model
         'status',
     ];
 
-    // Relasi ke Peminjaman
-    public function peminjaman(): BelongsTo 
+    protected $casts = [
+        'tgl_kembali' => 'date',
+        'denda' => 'integer',
+    ];
+
+    public function peminjaman(): BelongsTo
     {
-        return $this->belongsTo(Peminjaman::class, 'peminjaman_id');
+        return $this->belongsTo(
+            Peminjaman::class,
+            'peminjaman_id'
+        );
     }
 
-    // Relasi ke User (Peminjam)
-    public function user(): BelongsTo 
+    public function petugas(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-    // Relasi ke Petugas (Ubah User::class ke Petugas::class jika kamu punya Model Petugas terpisah)
-    public function petugas(): BelongsTo 
-    {
-        return $this->belongsTo(User::class, 'petugas_id');
+        return $this->belongsTo(
+            User::class,
+            'petugas_id'
+        );
     }
 }
